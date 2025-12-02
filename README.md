@@ -117,6 +117,10 @@ You may add these in the future:
 📄 License
 This project is completely free to use for personal or educational purposes.
 
+Figma project:
+
+https://www.figma.com/design/OtYWCA4lNkswSsqisZ1qKw/Quote-Generator?node-id=0-1&p=f&t=dfDyFkIjG52y454B-0
+
 🌟 Author
 Developed by Bayastan Paizov
 ✨ Simple. Smooth. Clean.
