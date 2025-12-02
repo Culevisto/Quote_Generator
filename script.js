@@ -3,6 +3,9 @@ const authorElement = document.getElementById('author');
 const newQuoteBtn = document.getElementById('newQuote');
 const copyBtn = document.getElementById('copyQuote');
 
+let isTyping = false;       // <<<<<<<<<< добавлено
+let typingTimeout = null;   // <<<<<<<<<< нужно для очистки анимации
+
 // -------- TEXT FORMATTING ----------
 function formatSentence(text) {
     let lower = text.toLowerCase();
@@ -31,18 +34,23 @@ function loadFromLocalStorage() {
 
 // -------- TYPING EFFECT ----------
 function typeText(element, text, callback = null) {
+    // Останавливаем предыдущую печать
+    if (typingTimeout) clearTimeout(typingTimeout);
+
+    isTyping = true;
     element.textContent = "";
     let index = 0;
 
-    const speed = 20; // скорость печати
+    const speed = 20;
 
     function type() {
         if (index < text.length) {
             element.textContent += text[index];
             index++;
-            setTimeout(type, speed);
-        } else if (callback) {
-            callback();
+            typingTimeout = setTimeout(type, speed);
+        } else {
+            isTyping = false;      // печать завершена
+            if (callback) callback();
         }
     }
 
@@ -51,6 +59,9 @@ function typeText(element, text, callback = null) {
 
 // -------- FETCH NEW QUOTE ----------
 async function getQuote() {
+    // Если текст печатается → не даём нажать
+    if (isTyping) return;
+
     newQuoteBtn.disabled = true;
     copyBtn.disabled = true;
 
@@ -68,7 +79,7 @@ async function getQuote() {
             quoteElement.classList.remove('fade');
             authorElement.classList.remove('fade');
 
-            // Пишем текст с typing effect
+            // Запускаем typing effect
             typeText(quoteElement, formattedQuote, () => {
                 authorElement.textContent = formattedAuthor;
             });
@@ -101,7 +112,6 @@ copyBtn.addEventListener('click', () => {
 // -------- INIT ----------
 newQuoteBtn.addEventListener('click', getQuote);
 
-// если есть цитата из LocalStorage → загрузим её
 if (!loadFromLocalStorage()) {
     getQuote();
 }
